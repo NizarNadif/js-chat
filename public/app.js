@@ -1,20 +1,51 @@
-console.log("ok");
+const msgbox = document.getElementsByClassName("msg-box")[0];
 
 const clientsocket = io();
 
-clientsocket.on("connect", (socket) => {
-	console.log("connesso");
-	btnPing.onclick = () => {
-		clientsocket.emit("ping", {});
-	};
+clientsocket.on("connect", () => {
+	console.log("connessione");
+});
+
+clientsocket.on("response", (params) => {
+	console.log("connessione avvenuta con successo, ti chiami " + params.username);
+	console.log(JSON.stringify(params));
 });
 
 clientsocket.on("message", (params) => {
-	console.log("messaggio dal server", JSON.stringify(params, null, 2));
+	console.log(params.username, " - ", params.userid, ": ", params.message);
+	const msgcontainer = document.createElement("div");
+	const msg = document.createElement("div");
+	if (params.userid == clientsocket.id) {
+		msgcontainer.className = "d-flex justify-content-end";
+		msg.className = "card msg msg-inviato";
+	} else {
+		msgcontainer.className = "d-flex justify-content-start";
+		msg.className = "card msg msg-ricevuto";
+	}
+	msg.innerText = params.message;
+	msg.style.backgroundColor = params.color;
+
+	// nome utente
+	let senderDiv = document.createElement("p");
+	let sender = document.createElement("small");
+	senderDiv.className = "card-text";
+	sender.innerText = params.username;
+	senderDiv.append(sender);
+
+	msg.append(senderDiv);
+	msgcontainer.append(msg);
+	msgbox.append(msgcontainer);
 });
 
-clientsocket.on("pong", () => {
-	console.log("pong ricevuto");
-});
+function invia(form) {
+	clientsocket.emit("message", { message: form.msg.value });
+}
 
-const btnPing = document.getElementById("btnPing");
+// autoscroll
+var osservatore = new MutationObserver(scorri); // Tell it to look for new children that will change the height.
+var config = { childList: true };
+osservatore.observe(msgbox, config);
+
+function scorri() {
+	msgbox.scrollTop = msgbox.scrollHeight;
+}

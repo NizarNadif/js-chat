@@ -1,0 +1,71 @@
+.content {
+	padding: 100px;
+	/* width: 700px; */
+}
+
+.col > .card {
+	height: 650px;
+	border-radius: 15px;
+	/* shadows */
+	box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+		0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06),
+		0 22.3px 17.9px rgba(0, 0, 0, 0.072), 0 41.8px 33.4px rgba(0, 0, 0, 0.086),
+		0 100px 80px rgba(0, 0, 0, 0.12);
+}
+
+.card-title {
+	border-radius: 15px;
+	padding: 10px;
+	background-color: red;
+	color: white;
+	font-weight: bold;
+	text-align: center;
+}
+
+.card-body {
+	padding: 25px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.scrollable {
+	overflow: auto;
+}
+
+.contenitore_inserimento {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.msg {
+	display: block;
+	height: auto;
+	width: auto;
+	padding: 20px;
+	margin: 10px;
+	margin-bottom: 20px;
+	border-radius: 25px;
+}
+
+.msg-inviato {
+	background-color: #c9df8a;
+	/* float: right; */
+}
+
+.msg-ricevuto {
+	background-color: #a5a5a5;
+	/* float: left; */
+}
+
+.msg-inviato > p > small {
+	color: gray;
+	float: left;
+	font-weight: bold;
+}
+
+.msg-ricevuto > p > small {
+	color: gray;
+	float: right;
+	font-weight: bold;
+}

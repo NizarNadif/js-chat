@@ -4,18 +4,39 @@ app.use(express.static(__dirname + "/public"));
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 
+var n_users = 0;
+var users = new Map();
+
 io.on("connection", (socketclient) => {
-	console.log("client connesso");
-	socketclient.emit("message", { message: "ciao", sender: "io me stesso" });
-	clients.push(socketclient);
-	socketclient.on("ping", () => {
-		console.log("ping from client");
-		socketclient.emit("pong", {});
+	socketclient.username = "Guest " + n_users++;
+	socketclient.color = "hsl(" + Math.random() * 360 + ", 75%, 75%)";
+	console.log(socketclient.username + " si è unito alla chat");
+	users.set(socketclient.id, socketclient.username);
+
+	socketclient.emit("response", {
+		username: socketclient.username,
+		list: JSON.parse(JSON.stringify(users)),
+	});
+
+	socketclient.on("message", (params) => {
+		console.log(
+			"messaggio inviato da ",
+			socketclient.client,
+			": ",
+			params.message
+		);
+		io.emit("message", {
+			username: users.get(socketclient.id),
+			userid: socketclient.id,
+			message: params.message,
+			color: socketclient.color,
+		});
+	});
+
+	socketclient.on("disconnect", (reason) => {
+		users.delete(socketclient.id);
+		console.log(socketclient.username + " ha lasciato la chat");
 	});
 });
-
-setInterval(() => {
-	io.emit("pong", {});
-}, 1000);
 
 server.listen(3000);
