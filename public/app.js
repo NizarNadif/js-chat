@@ -29,7 +29,7 @@ clientsocket.on("message", (params) => {
 	let senderDiv = document.createElement("p");
 	let sender = document.createElement("small");
 	senderDiv.className = "card-text";
-	sender.innerText = params.username;
+	sender.innerText = params.username + ", " + params.time;
 	senderDiv.append(sender);
 
 	msg.append(senderDiv);
@@ -38,9 +38,12 @@ clientsocket.on("message", (params) => {
 });
 
 function invia() {
+	let msg = document.getElementById("msg").value;
+	if (msg.length == 0) return;
 	clientsocket.emit("message", {
-		message: document.getElementById("msg").value,
+		message: msg,
 	});
+	document.getElementById("msg").value = "";
 }
 
 // autoscroll

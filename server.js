@@ -29,6 +29,10 @@ io.on("connection", (socketclient) => {
 			username: users.get(socketclient.id),
 			userid: socketclient.id,
 			message: params.message,
+			time:
+				("0" + new Date().getHours()).slice(-2) +
+				":" +
+				("0" + new Date().getMinutes()).slice(-2),
 			color: socketclient.color,
 		});
 	});
