@@ -37,8 +37,10 @@ clientsocket.on("message", (params) => {
 	msgbox.append(msgcontainer);
 });
 
-function invia(form) {
-	clientsocket.emit("message", { message: form.msg.value });
+function invia() {
+	clientsocket.emit("message", {
+		message: document.getElementById("msg").value,
+	});
 }
 
 // autoscroll
