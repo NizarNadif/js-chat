@@ -46,6 +46,10 @@ function invia() {
 	document.getElementById("msg").value = "";
 }
 
+function checkEnterClick(e) {
+	if (e.keyCode == 13) invia();
+}
+
 // autoscroll
 var osservatore = new MutationObserver(scorri); // Tell it to look for new children that will change the height.
 var config = { childList: true };
