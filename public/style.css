@@ -102,4 +102,5 @@ button[type="button"] {
 
 input[type="text"] {
 	border-radius: 30px;
+	padding-right: 50px;
 }
