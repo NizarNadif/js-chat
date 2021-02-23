@@ -13,16 +13,17 @@ io.on("connection", (socketclient) => {
 	console.log(socketclient.username + " si è unito alla chat");
 	users.set(socketclient.id, socketclient.username);
 
+	console.log({ users });
 	socketclient.emit("response", {
 		username: socketclient.username,
-		list: JSON.parse(JSON.stringify(users)),
+		list: users,
 	});
 
 	socketclient.on("message", (params) => {
 		console.log(
 			"messaggio inviato da ",
-			socketclient.client,
-			": ",
+			socketclient.username,
+			":",
 			params.message
 		);
 		io.emit("message", {
