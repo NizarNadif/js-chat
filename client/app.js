@@ -2,38 +2,64 @@ const msgbox = document.getElementsByClassName("msg-box")[0];
 
 const clientsocket = io();
 
+const rememberedAccounts = JSON.parse(
+	localStorage.getItem("firebaseui::rememberedAccounts")
+);
+console.log(rememberedAccounts);
+console.log(JSON.stringify(rememberedAccounts, null, 2));
+
 clientsocket.on("connect", () => {
+	clientsocket.emit("set user data", {
+		data: rememberedAccounts[0],
+	});
 	console.log("connessione");
 });
 
 clientsocket.on("response", (params) => {
-	console.log("connessione avvenuta con successo, ti chiami " + params.username);
-	console.log(JSON.stringify(params));
+	console.log("connessione avvenuta con successo");
+	console.log(JSON.parse(params.list));
 });
 
 clientsocket.on("message", (params) => {
-	console.log(params.username, " - ", params.userid, ": ", params.message);
+	console.log(params);
 	const msgcontainer = document.createElement("div");
 	const msg = document.createElement("div");
+	const img = document.createElement("img");
+	img.className = "foto-profilo";
+	msg.className = "card msg msg-inviato";
+	img.src = params.photo;
+
+	// nome utente
+	let sender = document.createElement("h6");
+	sender.className = "card-title";
+	sender.innerText = params.username;
+	sender.style.color = params.color;
+	msg.append(sender);
+
+	//posizionamento della card in base al mittente
 	if (params.userid == clientsocket.id) {
 		msgcontainer.className = "d-flex justify-content-end";
 		msg.className = "card msg msg-inviato";
+		msgcontainer.append(msg);
+		msgcontainer.append(img);
 	} else {
 		msgcontainer.className = "d-flex justify-content-start";
 		msg.className = "card msg msg-ricevuto";
+		msgcontainer.append(img);
+		msgcontainer.append(msg);
 	}
-	msg.innerHTML = toHyperlink(params.message);
-	msg.style.backgroundColor = params.color;
 
-	// nome utente
-	let senderDiv = document.createElement("p");
-	let sender = document.createElement("small");
-	senderDiv.className = "card-text";
-	sender.innerText = params.username + ", " + params.time;
-	senderDiv.append(sender);
+	//inserimento del testo
+	msg.innerHTML += toHyperlink(params.message);
 
-	msg.append(senderDiv);
-	msgcontainer.append(msg);
+	// orario
+	let timeDiv = document.createElement("p");
+	let time = document.createElement("small");
+	timeDiv.className = "card-text";
+	time.innerText = params.time;
+	timeDiv.append(time);
+
+	msg.append(timeDiv);
 	msgbox.append(msgcontainer);
 });
 
@@ -46,6 +72,7 @@ function invia() {
 	document.getElementById("msg").value = "";
 }
 
+// viene inviato il messaggio quando si preme il tasto enter
 function checkEnterClick(e) {
 	if (e.keyCode == 13) invia();
 }
